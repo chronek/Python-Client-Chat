@@ -1,9 +1,3 @@
-# README
-* Principia College
-* Computer Networking
-* Spring 2018
-* Group 2 - [Github Repo](https://github.com/PrincipiaCollege/2-pythonChat.git)
-
 ### Developers
 * Chris Hronek
 * Jacob Huss
@@ -11,7 +5,7 @@
 
 
 ##### Server program runs on port 5002
-##### Server IP address: 10.130.35.72
+##### Server IP address: set to the desired IP address
 
 
 #### To run the server
