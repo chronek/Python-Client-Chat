@@ -7,7 +7,7 @@ import os
 
 def setup():
     """Sets up the client's socket and returns the socket"""
-    serverName = localhost  # placeholder, should run on a server
+    serverName = 'localhost'  # placeholder, should run on a server
     serverPort = 5002
     clientSocket = socket(AF_INET, SOCK_STREAM)
     clientSocket.connect((serverName, serverPort))
