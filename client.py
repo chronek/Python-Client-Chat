@@ -63,9 +63,6 @@ def login(clientSocket):
 def readyForUse(clientSocket, username):
     """Send start a thread that listens to server and listen for user input"""
 
-    # Send the username so the server can find who you are
-    clientSocket.send(username.encode())
-
     # start thread to listen to server messages
     threading.Thread(target=listenToServer, args=(clientSocket,)).start()
     message = None

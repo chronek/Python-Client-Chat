@@ -22,14 +22,14 @@ def setup(port):
 
 def interactWithClient(client, address):
     """Initiates the interaction between server and client"""
-    while loginAttempt(client) != 1:
+    ret = loginAttempt(client)
+    while ret[0] != 1:
         print("Failed login")
-
-    print("Client logged in")
+        ret = loginAttempt(client)
 
     # send username over so client has access to it
-    username = client.recv(1024).decode()
-
+    user = ret[1]
+    username = user.username
     # find the User object related the username
     thisUser = None
     for user in users:
@@ -37,13 +37,12 @@ def interactWithClient(client, address):
             user.client = client
             activeUsers.append(user)
             thisUser = user
-
+            
+    print(username, "logged in")
     # sends a message containing the instructions how to use the client
     personalMessage(username, "\nWelcome to the chat room!\n")
-    personalMessage(username, "Type a message to broadcast it \
-                    to everyone on the server.\n")
-    personalMessage(username, "Type @<username> <message> \
-                    to send a PM to a user.\n")
+    personalMessage(username, "Type a message to broadcast it to everyone on the server.\n")
+    personalMessage(username, "Type @<username> <message> to send a PM to a user.\n")
     personalMessage(username, "Type !quit to log out.\n")
 
     # stores missed messages for the user to read when they login again
@@ -93,10 +92,10 @@ def loginAttempt(client):
     # determine if the user is locked out and lock them out if they need to be
     if currUser.shouldLock():
         currUser.lockOut()
-        print("User locked out, try again later")
+        print(currUser.username, "locked out, try again later")
         passwordFeedback = -2
     elif currUser.stillLocked():
-        print("User locked out, try again later")
+        print(currUser.username, "locked out, try again later")
         passwordFeedback = -2
 
     # send the results of the password check
@@ -104,10 +103,10 @@ def loginAttempt(client):
 
     if passwordFeedback and currUser.lockOutTime is None:
         # nothing went wrong during attempt, log user in
-        return 1
+        return 1, currUser
     else:
         currUser.badAttempt()
-        return 0
+        return 0, currUser
 
 
 def personalMessage(username, message):
@@ -148,7 +147,7 @@ def listenToClient(user):
             activeUsers.remove(user)
             user.client = None
             broadcast(user.username + " has left the chat room.", True, "")
-            print("Client logged out")
+            print(user.username, "logged out")
 
         # @ signifies a personal message to a user
         # format this string and prep to send it out
@@ -200,3 +199,4 @@ if __name__ == '__main__':
         ut.cls()
         print('PythonChat Server cleanup and exit...done!')
 exit (0) # return 0 for successful completion
+
